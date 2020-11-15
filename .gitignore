@@ -1,0 +1,7 @@
+.DS_*
+.idea
+env
+venv
+*/__pycache__/
+**/__pycache__/
+mysite/local_settings.py
