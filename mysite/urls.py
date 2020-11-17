@@ -25,29 +25,7 @@ schema_view = get_schema_view(title='Books System API')
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # 手动原始json 指定content_type
-    path('api/v0/publishes/', apis.publish_list_raw),
-
-    # @api_views(['GET', 'POST'])
-    path('api/v1/publishes/', apis.publish_list),
-    path('api/v1/publish/<int:pk>/', apis.publish_detail),
-
-    # APIView
-    path('api/v2/publishes/', apis.PublishList.as_view()),
-    path('api/v2/publish/<int:pk>/', apis.PublishDetail.as_view()),
-
-    # Mixin
-    path('api/v3/publishes/', apis.ModePublishList.as_view()),
-    path('api/v3/publish/<int:pk>/', apis.ModePublishDetail.as_view()),
-
-    # Generics
-    path('api/v4/publishes/', apis.GenericPublishList.as_view()),
-    path('api/v4/publish/<int:pk>/', apis.GenericPublishDetail.as_view()),
-
-
-    # ModelSerializer
-    path('api/v5/publishes/', apis.ModelPublishList.as_view()),
-
+    path('api/', include('app.urls')),
 
     # Login
     path('api-auth/', include('rest_framework.urls')),
