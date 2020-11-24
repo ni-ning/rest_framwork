@@ -18,7 +18,6 @@ from django.urls import path, include
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 
-from app import apis
 
 schema_view = get_schema_view(title='Books System API')
 
@@ -26,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include('app.urls')),
+    path('api/', include('gamma.urls')),
 
     # Login
     path('api-auth/', include('rest_framework.urls')),
