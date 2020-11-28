@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'app',
     'beta',
+    'gamma'
 ]
 
 MIDDLEWARE = [

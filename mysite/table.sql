@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS `nn_publish`(
 );
 
 
-
 --ALTER TABLE `nn_publish` ADD COLUMN `operator_id` INT NOT NULL DEFAULT -1;
 
 
@@ -28,4 +27,19 @@ CREATE TABLE IF NOT EXISTS `nn_track`(
     `title` VARCHAR(128) NOT NULL DEFAULT '',
     `duration` VARCHAR(128) NOT NULL DEFAULT ''
 
+);
+
+
+CREATE TABLE IF NOT EXISTS `nn_user_info`(
+    `id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `user_type` INTEGER NOT NULL DEFAULT 1,
+    `username` VARCHAR(32) NOT NULL DEFAULT '',
+    `password` VARCHAR(64) NOT NULL DEFAULT ''
+);
+
+
+CREATE TABLE IF NOT EXISTS `nn_user_token`(
+    `id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `user_id` INTEGER NOT NULL DEFAULT -1,
+    `token` VARCHAR(64) NOT NULL DEFAULT ''
 );
