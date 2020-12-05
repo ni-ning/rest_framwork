@@ -8,6 +8,8 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.versioning import BaseVersioning, QueryParameterVersioning
+from rest_framework.parsers import JSONParser, FormParser, FileUploadParser
 
 from gamma import models
 
@@ -125,3 +127,68 @@ class UserView(APIView):
             }
         }
         return JsonResponse(ret)
+
+
+class ParamVersioning(BaseVersioning):
+    def determine_version(self, request, *args, **kwargs):
+        version = request.query_params.get('ver')
+        return version
+
+
+class UsersView(APIView):
+
+    # 可以再view中解析request，也可以利用钩子，自定义类 自动处理
+    # versioning_class = ParamVersioning
+    versioning_class = QueryParameterVersioning
+
+    def get(self, request):
+
+        self.dispatch
+        # request.attr 没有时 会代理到 _reqeust
+        # version = request.query_params.get('version')
+
+        # 获取版本
+        print(request.version)
+        # 获取处理版本的对象
+        print(request.versioning_scheme)
+        # 根据viewname反向生成url 赞
+        u1 = request.versioning_scheme.reverse('uuu', request=request)
+        print(u1)
+
+        from django.urls import reverse
+        u2 = reverse(viewname='uuu')
+        print(u2)
+
+        return HttpResponse('用户列表')
+
+
+class DjangoView(APIView):
+
+    def post(self, request):
+
+        print(type(request._request))
+
+        from django.core.handlers.wsgi import WSGIRequest
+
+        return HttpResponse('django.request.body')
+
+
+class ParserView(APIView):
+    parser_classes = [JSONParser, FormParser]
+
+    """
+    JSONParser: 表示只能解析 content-type: application/json头
+    FormParser: 表示只能接卸 content-type: x-www-form-urlencoded头
+    """
+
+    def post(self, request):
+
+        print(request.data)
+        """
+        1. 获取用户请求
+        2. 获取用户请求体
+        3. 根据请求头 和 parser_classes = [JSONParser, FormParser] 中支持的请求头进行比较
+        4. 让JSONParser对象 解析 请求体
+        5. 解析结果 得到 request.data
+        """
+        return HttpResponse('OK')

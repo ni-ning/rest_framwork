@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/v1/', include('app.urls')),
-    path('api/v1/', include('gamma.urls')),
+    path('api/v1/', include('gamma.urls')),  # 认证权限相关
 
     # Login
     path('api-auth/', include('rest_framework.urls')),

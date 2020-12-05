@@ -1,4 +1,19 @@
+# coding: utf-8
 from django.db import models
+
+
+class UserGroup(models.Model):
+    title = models.CharField(max_length=32)
+
+    class Meta:
+        db_table = 'nn_user_group'
+
+
+class Role(models.Model):
+    title = models.CharField(max_length=32)
+
+    class Meta:
+        db_table = 'nn_role'
 
 
 class UserInfo(models.Model):
@@ -11,6 +26,9 @@ class UserInfo(models.Model):
     user_type = models.IntegerField(choices=user_type_choices)
     username = models.CharField(max_length=32, unique=True)
     password = models.CharField(max_length=64)
+
+    group = models.ForeignKey(UserGroup, on_delete=models.DO_NOTHING)
+    roles = models.ManyToManyField(Role)
 
     class Meta:
         db_table = 'nn_user_info'
