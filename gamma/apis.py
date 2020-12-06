@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import json
 import hashlib
 import time
 
@@ -12,6 +13,7 @@ from rest_framework.versioning import BaseVersioning, QueryParameterVersioning
 from rest_framework.parsers import JSONParser, FormParser, FileUploadParser
 
 from gamma import models
+from gamma import serializers
 
 
 # 推荐继承 BaseAuthentication
@@ -192,3 +194,38 @@ class ParserView(APIView):
         5. 解析结果 得到 request.data
         """
         return HttpResponse('OK')
+
+
+class RoleView(APIView):
+    def get(self, request):
+        # 方式一：原始json
+        # query_set = models.Role.objects.all().values('id', 'title')
+        # roles = list(query_set)
+        # ret = json.dumps(roles, ensure_ascii=False)
+
+        # 方式二：多个 [obj, obj, obj]
+        # query_set = models.Role.objects.all()
+        # ser = serializers.RoleSerializer(instance=query_set, many=True)
+        # # 有序字典
+        # ret = json.dumps(ser.data)
+
+        # 方式三: 单个 obj
+        role = models.Role.objects.all().first()
+        ser = serializers.RoleSerializer(instance=role, many=False)
+        ret = json.dumps(ser.data)
+        return HttpResponse(ret)
+
+
+class UserInfoView(APIView):
+    def get(self, request):
+
+        query_set = models.UserInfo.objects.all()
+
+        # 方式一：自定义序列化字段
+        # ser = serializers.UserInfoSerializer(instance=query_set, many=True)
+
+        # 方式二：自定义 ModelSerializer
+        ser = serializers.UserInfoModelSerializer(instance=query_set, many=True)
+
+        ret = json.dumps(ser.data)
+        return HttpResponse(ret)

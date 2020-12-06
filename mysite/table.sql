@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `nn_user_info`(
     `user_type` INTEGER NOT NULL DEFAULT 1,
     `username` VARCHAR(32) NOT NULL DEFAULT '',
     `password` VARCHAR(64) NOT NULL DEFAULT '',
-    `group_id` INTEGER NOT NULL DEFAULT -1,
+    `group_id` INTEGER NOT NULL DEFAULT -1
+
 );
 
 
@@ -53,4 +54,11 @@ CREATE TABLE IF NOT EXISTS `nn_user_group`(
 CREATE TABLE IF NOT EXISTS `nn_role`(
     `id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
     `title` VARCHAR(32) NOT NULL DEFAULT ''
+);
+
+
+CREATE TABLE IF NOT EXISTS `nn_user_info_roles`(
+    `id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `userinfo_id` INTEGER NOT NULL DEFAULT -1,
+    `role_id` INTEGER NOT NULL DEFAULT -1
 );
