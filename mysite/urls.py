@@ -25,17 +25,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/v1/', include('app.urls')),
-    path('api/v1/', include('gamma.urls')),  # 认证权限相关
+    path('api/v1/', include('gamma.urls')),
 
     # Login
     path('api-auth/', include('rest_framework.urls')),
 
-    # 列出所有的 api 互相关联的api设计 挺好 待测试 ToDo
-
-    # 分页设计
+    # 列出所有的 api 互相关联的api设计
+    path('schema/', schema_view),
 
     # 文档
-    path('schema/', schema_view),
     path('docs/', include_docs_urls(title='图书管理系统')),
-
 ]
