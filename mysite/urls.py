@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('api/v1/', include('app.urls')),
     path('api/v1/', include('gamma.urls')),
+    path('api/v1/', include('delta.urls')),
 
     # Login
     path('api-auth/', include('rest_framework.urls')),

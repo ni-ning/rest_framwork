@@ -62,3 +62,9 @@ CREATE TABLE IF NOT EXISTS `nn_user_info_roles`(
     `userinfo_id` INTEGER NOT NULL DEFAULT -1,
     `role_id` INTEGER NOT NULL DEFAULT -1
 );
+
+
+CREATE TABLE IF NOT EXISTS `nn_books`(
+    `id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `name` VARCHAR(32) NOT NULL DEFAULT ''
+);
