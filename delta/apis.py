@@ -107,6 +107,24 @@ class GenericAPIView(APIView):
         return self.serializer_class(*arg, **kw)
 
 
+class ListModelMixin(object):
+    # Mixin模式不能单独使用，其中包含其他类中方法，如get_queryset, get_serializer
+    def list(self, request, *arg, **kw):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class CreateModelMixin(object):
+    def create(self, request, *arg, **kw):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data)
+        else:
+            return Response(serializer.errors)
+
+
 
 
 
