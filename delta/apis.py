@@ -87,15 +87,18 @@ class BookDetail(APIView):
         """
         删除记录
         """
-        query_set = models.Books.objects.filter(id=pk).first()
+        query_set = models.Books.objects.filter(id=pk)
         if query_set:
             query_set.delete()
 
-        return Response()
+        return Response({'msg': 'Success'})
 
 
 # 第一次封装
 class GenericAPIView(APIView):
+    """
+    把公共部分抽出来 queryset serializer_class
+    """
     queryset = None
     serializer_class = None
 
@@ -110,6 +113,9 @@ class GenericAPIView(APIView):
 class ListModelMixin(object):
     # Mixin模式不能单独使用，其中包含其他类中方法，如get_queryset, get_serializer
     def list(self, request, *arg, **kw):
+        """
+        列表
+        """
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -117,6 +123,9 @@ class ListModelMixin(object):
 
 class CreateModelMixin(object):
     def create(self, request, *arg, **kw):
+        """
+        创建
+        """
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -125,8 +134,117 @@ class CreateModelMixin(object):
             return Response(serializer.errors)
 
 
+class RetrieveModelMixin(object):
+    def retrieve(self, request, pk, *arg, **kw):
+        """
+        详情
+        """
+        obj = self.get_queryset().filter(pk=pk).first()
+        serializer = self.get_serializer(obj)
+        return Response(serializer.data)
 
 
+class UpdateModelMixin(object):
+    def update(self, request, pk, *arg, **kw):
+        """
+        更新
+        """
+        obj = self.get_queryset().filter(pk=pk).first()
+        serializer = self.get_serializer(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data)
+        else:
+            return Response(serializer.errors)
+
+
+class DestroyModelMixin(object):
+    def destroy(self, request, pk, *arg, **kw):
+        """
+        删除
+        """
+        query = self.get_queryset().filter(pk=pk)
+        if query:
+            query.delete()
+        return Response({'msg': 'Success'})
+
+
+class BookGenericView(GenericAPIView, ListModelMixin, CreateModelMixin):
+    queryset = models.Books.objects.all()
+    serializer_class = serializers.BookSerializer
+
+    def get(self, request, *arg, **kw):
+        return self.list(request, *arg, **kw)
+
+    def post(self, request, *arg, **kw):
+        return self.create(request, *arg, **kw)
+
+
+class BookGenericDetail(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+    queryset = models.Books.objects.all()
+    serializer_class = serializers.BookSerializer
+
+    def get(self, request, pk, *arg, **kw):
+        return self.retrieve(request, pk, *arg, **kw)
+
+    def put(self, request, pk, *arg, **kw):
+        return self.update(request, pk, *arg, **kw)
+
+    def delete(self, request, pk, *arg, **kw):
+        return self.destroy(request, pk, *arg, **kw)
+
+
+# 第二次封装
+class ListCreateAPIView(GenericAPIView, ListModelMixin, CreateModelMixin):
+    pass
+
+
+class RetrieveUpdateDestroyAPIView(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+    pass
+
+
+class BookListCreate(GenericAPIView, ListModelMixin, CreateModelMixin):
+    queryset = models.Books.objects.all()
+    serializer_class = serializers.BookSerializer
+
+    def get(self, request, *arg, **kw):
+        return self.list(request, *arg, **kw)
+
+    def post(self, request, *arg, **kw):
+        return self.create(request, *arg, **kw)
+
+
+class BookRetrieveUpdateDestroy(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+    queryset = models.Books.objects.all()
+    serializer_class = serializers.BookSerializer
+
+    def get(self, request, pk, *arg, **kw):
+        return self.retrieve(request, pk, *arg, **kw)
+
+    def put(self, request, pk, *arg, **kw):
+        return self.update(request, pk, *arg, **kw)
+
+    def delete(self, request, pk, *arg, **kw):
+        return self.destroy(request, pk, *arg, **kw)
+
+
+# 第三次封装
+from rest_framework.viewsets import ViewSetMixin
+
+
+class ModelViewSet(ViewSetMixin, ListCreateAPIView, RetrieveUpdateDestroyAPIView):
+    pass
+
+
+class BookModelViewSet(ModelViewSet):
+    queryset = models.Books.objects.all()
+    serializer_class = serializers.BookSerializer
+
+
+from rest_framework import views
+from rest_framework import generics
+from rest_framework import mixins
+from rest_framework import viewsets
 
 
 
